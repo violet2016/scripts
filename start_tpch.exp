@@ -1,0 +1,17 @@
+#/usr/bin/expect -f
+set timeout -1
+spawn kubectl exec -it hawq-master-667dff4c6c-t8xzq /bin/bash
+expect "root"
+send "su - gpadmin\n"
+expect "gpadmin"
+send "cd /data/pivotalhawq/ && source greenplum_path.sh\n"
+expect "pivotalhawq"
+#send "psql -f tpch.sql -d tpch_parquet_100gpn_snappy_part_random_gpadmin > result_test.txt\n"
+#send -- "psql -f tpch.sql -d tpch_parquet_10gpn_snappy_part_random_gpadmin > result_test.txt \r"
+send -- "cd /home/gpadmin && ./run.sh 10 \r"
+expect "$ "
+#send -- "cat result_test.txt | grep Time: > time.txt && exit \r"
+send -- "exit \r"
+expect "$ "
+send -- "exit \r"
+interact

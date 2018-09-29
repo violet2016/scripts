@@ -1,0 +1,1 @@
+./to_db_config.sh $1

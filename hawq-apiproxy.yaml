@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: hawq-apiproxy
+  name: hawq-apiproxy
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hawq-apiproxy
+  template:
+    metadata:
+      labels:
+        app: hawq-apiproxy
+    spec:
+      containers:
+      - name: hawq-apiproxy
+        image: hawqbeijing/rm-apiproxy:perf
+        imagePullPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hawq-apiproxy-service
+  labels:
+    name: hawq-apiproxy-service
+spec:
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8051
+    targetPort: 50051
+  selector:
+    app: hawq-apiproxy

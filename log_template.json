@@ -1,0 +1,18 @@
+{
+    "_source": ["msg","time","resourceid"],
+    "query": {
+        "range": {
+            "time": {
+                "gte" : "TIME_HOLDER",
+                "lte" : "now/s",
+		"format": "yyyy-MM-dd-HHmm",
+		"time_zone": "+08:00"
+            }
+        }
+        
+    },
+    "sort": [
+        {"time": {"order": "asc"}}
+    ],
+    "size": 0
+}
