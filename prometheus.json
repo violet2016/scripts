@@ -1,0 +1,15 @@
+
+{
+    "query": {
+      "bool": {
+        "must": {
+          "match_all": {}
+        },
+        "filter": {
+            "term": {
+              "name": "scrape_duration_seconds"
+            }
+        }
+      }
+    }
+}
