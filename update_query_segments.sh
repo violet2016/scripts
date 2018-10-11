@@ -8,5 +8,5 @@ then
     popd
     exit
 fi
-python /Users/vcheng/workspace/py-workspace/api_log_parser/main.py ./api-log.csv $config_id
+python /Users/vcheng/workspace/py-workspace/api_log_parser/main.py ./ $config_id
 popd

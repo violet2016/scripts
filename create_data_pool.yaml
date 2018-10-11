@@ -1,0 +1,24 @@
+apiVersion: rm.pivotaldata.io/v1alpha1
+kind: HAWQResourcePool
+metadata:
+  name: hawq-resource-pool
+  namespace: default
+spec:
+  namespace: default
+  selector:
+    matchLabels:
+      resourcepool: hawq-resource-pool
+  resourceCapacity:
+    memory: 280000
+    cpu: 60000
+    ephemeralStorage: 100000
+  image: hawqbeijing/hawq_for_rm:perf
+  groups:
+  - name: group1
+    groupSize: 10
+    groupResourceLimit:
+      memory: 20000
+      cpu: 5000
+      ephemeralStorage: 10000
+  #BestAllocatePolicy/FastAllocatePolicy/AIAllocatePolicy
+  allocatePolicy: "FastAllocatePolicy"

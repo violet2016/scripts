@@ -23,5 +23,5 @@ sed "s/DATA_SIZE/$DATA_SIZE/g" start_tpch-template.exp > start_tpch.exp
 expect ./start_tpch.exp
 ./retrieve_data.sh $DATE
 ./remove_all_pods.sh $DATE
-./to_db.sh ~/workspace/data/hawq-tpch/$DAY/$DATE
+./to_db.sh ~/workspace/data/hawq-tpch/$DAY/$DATE $DATA_SIZE
 sleep 5

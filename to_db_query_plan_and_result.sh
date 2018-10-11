@@ -14,6 +14,15 @@ do
     start_time=`grep "StartTime:" $filename | sed -En "s/StartTime:(.+)/\1/p"`
     end_time=`grep "EndTime:" $filename | sed -En "s/EndTime:(.+)/\1/p"`
     exec_time=`grep "Time: " $filename | sed -En "s/Time:(.+) ms/\1/p"`
+    result_lines=`grep "\-\-\-" $filename | wc -l`
+    finished="t"
+    if [ "$result_lines" -eq "0" ]; then
+        finished="f"
+    fi
+    
+    if [ -z $exec_time ]; then
+        exec_time="0.0"
+    fi
     #echo $query_id $query_plan_rows_end $query_plan_rows $start_time $end_time
     psql -d hawq-recommend -c "
     insert into exp_queries(
@@ -23,7 +32,8 @@ do
         start_time,
         end_time,
         total_exec_time_in_ms,
-        config_id
+        config_id,
+        success
 ) values(
     $query_id,
     $query_plan_rows,
@@ -31,7 +41,8 @@ do
     timestamp with time zone '$start_time UTC',
     timestamp with time zone '$end_time UTC',
     $exec_time,
-    $id
+    $id,
+    '$finished'
 );"
 done
 popd

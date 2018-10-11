@@ -3,10 +3,9 @@
     "query": {
         "range": {
             "time": {
-                "gte" : "2018-10-03-1931",
-                "lte" : "now/s",
-		"format": "yyyy-MM-dd-HHmm",
-		"time_zone": "+08:00"
+                "gte" : "STARTTIME_HOLDER",
+                "lte" : "ENDTIME_HOLDER",
+		        "format": "yyyy-MM-dd HH:mm:ss"
             }
         }
         

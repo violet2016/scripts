@@ -10,12 +10,14 @@ psql -d hawq-recommend -c "insert into exp_config(
     mem_size, 
     cpu_size, 
     storage_size, 
+    data_size,
     exp_time) 
     values
     ( $groupsize, 
      $memsize,
      $cpusize,
      $storagesize,
+     $2,
     to_timestamp('$timestamp', 'yyyy-mm-dd-hh24mi'))
 "
 id=`psql -qtAX -d hawq-recommend -c "select id from exp_config where exp_time=to_timestamp('$timestamp','yyyy-mm-dd-hh24mi')"`
