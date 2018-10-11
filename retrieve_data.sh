@@ -1,5 +1,5 @@
 ### retrieve data from kubenetes ###
-
+master="hawq-master-667dff4c6c-t8xzq"
 DATE=`date +%Y-%m-%d`
 #mkdir -p ~/workspace/data/hawq-tpch/$DATE/$1/
 cp hawq-resourcepool-template-$1.yaml ~/workspace/data/hawq-tpch/$DATE/$1/
@@ -10,7 +10,7 @@ es2csv -q '*' -u http://localhost:8001/api/v1/namespaces/hawq-monitoring/service
 es2csv -q @'./log.json' -r -u http://localhost:8001/api/v1/namespaces/hawq-monitoring/services/elasticsearch-logging/proxy -i logstash-`date +%Y.%m.%d` -o ~/workspace/data/hawq-tpch/$DATE/$1/api-log.csv -k
 logfile="~/workspace/data/hawq-tpch/$DATE/$1/api-log.csv"
 
-kubectl cp default/hawq-master-667dff4c6c-t8xzq:/home/gpadmin/test_result/ ~/workspace/data/hawq-tpch/$DATE/$1/
+kubectl cp default/$master:/home/gpadmin/test_result/ ~/workspace/data/hawq-tpch/$DATE/$1/
 
 if [ -f $logfile ]; then
    echo "File $logfile saved."
@@ -20,9 +20,9 @@ else
 fi
 rm log.json
 
-filename=`kubectl exec hawq-master-667dff4c6c-t8xzq -- bash -c "cd /home/gpadmin/hawq-data-directory/masterdd/pg_log && ls -ltr | tail -1 | xargs -n 1 | tail -1"`
+filename=`kubectl exec $master -- bash -c "cd /home/gpadmin/hawq-data-directory/masterdd/pg_log && ls -ltr | tail -1 | xargs -n 1 | tail -1"`
 
-kubectl cp default/hawq-master-667dff4c6c-t8xzq:/home/gpadmin/hawq-data-directory/masterdd/pg_log/$filename ~/workspace/data/hawq-tpch/$DATE/$1/
+kubectl cp default/$master:/home/gpadmin/hawq-data-directory/masterdd/pg_log/$filename ~/workspace/data/hawq-tpch/$DATE/$1/
 live_pods=`kubectl get pods | grep -o "group1[a-z0-9\-]*"`
 for podname in $live_pods
 do

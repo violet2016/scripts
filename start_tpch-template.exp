@@ -1,6 +1,6 @@
 #/usr/bin/expect -f
 set timeout -1
-spawn kubectl exec -it hawq-master-667dff4c6c-t8xzq /bin/bash
+spawn kubectl exec -it MASTER /bin/bash
 expect "root"
 send "su - gpadmin\n"
 expect "gpadmin"
