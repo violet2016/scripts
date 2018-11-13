@@ -6,6 +6,6 @@ do
     id=${array[0]}
     time=${array[1]}
     data_size=${array[2]}
-    folder="/Users/vcheng/workspace/data/hawq-tpch/${time:0:10}/$time"
+    folder="~/workspace/data/hawq-tpch/${time:0:10}/$time"
     ./to_db_plan_info.sh "$folder" $data_size
 done

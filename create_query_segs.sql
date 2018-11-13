@@ -1,3 +1,4 @@
+-- done
 create table if not exists query_segment_rel (
     query_id integer,
     config_id integer,

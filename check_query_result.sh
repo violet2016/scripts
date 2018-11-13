@@ -5,6 +5,6 @@ do
     IFS='|' read -r -a array <<< "$check"
     id=${array[0]}
     time=${array[1]}
-    folder="/Users/vcheng/workspace/data/hawq-tpch/${time:0:10}/$time"
+    folder="~/workspace/data/hawq-tpch/${time:0:10}/$time"
     ./to_db_query_plan_and_result.sh "$folder" 
 done

@@ -1,3 +1,4 @@
+--done
 create table if not exists exp_config(
     id SERIAL PRIMARY KEY, 
     exp_time timestamp with time zone, 

@@ -1,18 +1,18 @@
-10,lineitem,5.99861e+07
-10,orders,1.5e+07
-10,partsupp,8e+06
-10,part,2e+06
-10,customer,1.5e+06
-10,supplier,100000
-10,nation,25
-10,region,5
-10,e_orders,0
-10,errortable_lineitem,0
-10,e_lineitem,0
-10,errortable_orders,0
-10,e_customer,0
-10,e_partsupp,0
-10,e_supplier,0
-10,e_part,0
-10,e_region,0
-10,e_nation,0
+ 20,lineitem,1.19995e+08
+ 20,orders,3e+07
+ 20,partsupp,1.6e+07
+ 20,part,4e+06
+ 20,customer,3e+06
+ 20,supplier,200000
+ 20,nation,25
+ 20,region,5
+ 20,e_orders,0
+ 20,errortable_lineitem,0
+ 20,e_lineitem,0
+ 20,errortable_orders,0
+ 20,e_customer,0
+ 20,e_partsupp,0
+ 20,e_supplier,0
+ 20,e_part,0
+ 20,e_region,0
+ 20,e_nation,0

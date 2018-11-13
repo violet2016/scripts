@@ -1,3 +1,4 @@
+--done
 create table if not exists query_plan_info (
     query_id integer,
     query_plan_hash varchar(64),

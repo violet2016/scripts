@@ -2,12 +2,11 @@
 data=20
 maxcpu=60000
 maxstorage=100000
-for size in `seq 45 -5 10`;
+for size in `seq 30 -5 10`;
 do
-
+#size=35
     for cpu in `seq 2000 -500 500`
     do
-#size=20
 #cpu=500
         totalcpu=$((cpu*size))
         if [ $totalcpu -gt $maxcpu ]; then

@@ -1,3 +1,4 @@
+-- done
 create table if not exists exp_queries(
     query_id integer,
     query_plan_hash varchar(64),

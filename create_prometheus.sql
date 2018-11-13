@@ -1,3 +1,4 @@
+-- done
 create table if not exists k8s_prometheus_metrics (
     whole_name varchar(128), 
     sample_time timestamp with time zone, 
