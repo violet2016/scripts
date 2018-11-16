@@ -1,4 +1,5 @@
 #!/bin/bash
+kubectl get hawqresourcepool -o yaml > config.yaml
 if [ $# -ne 4 ]; then
     echo -e "\nUsage:\t $0 HOSTNAME START END REPEAT_TIME\n"
     exit 1

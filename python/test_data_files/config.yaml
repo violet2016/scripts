@@ -1,0 +1,62 @@
+apiVersion: v1
+items:
+- apiVersion: rm.pivotaldata.io/v1alpha1
+  kind: HAWQResourcePool
+  metadata:
+    creationTimestamp: 2018-11-14T02:55:34Z
+    generation: 1
+    labels:
+      resourcepool: hawq-resource-pool
+    name: hawq-resource-pool
+    namespace: default
+    resourceVersion: "1484570"
+    selfLink: /apis/rm.pivotaldata.io/v1alpha1/namespaces/default/hawqresourcepools/hawq-resource-pool
+    uid: c1da2246-e7b8-11e8-9c12-54781a877048
+  spec:
+    allocatePolicy: FastAllocatePolicy
+    autoScale:
+      maxSegmentNum: 0
+      proactivelyScale: false
+      scaleDownInterval: 0
+      scaleDownRatio: 0
+      scaleUpRatio: 0
+      turnOnAutoScale: false
+    groups:
+    - groupResourceLimit:
+        cpu: 500
+        ephemeralStorage: 1024
+        memory: 1024
+      groupSize: 10
+      name: group1
+    - groupResourceLimit:
+        cpu: 500
+        ephemeralStorage: 2048
+        memory: 2048
+      groupSize: 10
+      name: group2
+    image: hawqbeijing/hawq_for_rm
+    namespace: default
+    resourceCapacity:
+      cpu: 16000
+      ephemeralStorage: 3072
+      memory: 121440
+    selector:
+      matchLabels:
+        resourcepool: hawq-resource-pool
+  status:
+    availableResourceStatus:
+      cpu: 10000
+      ephemeralStorage: 30720
+      memory: 30720
+    resourceGroupStatus:
+    - allocatedPodNum: 0
+      availablePodNum: 10
+      name: group1
+    - allocatedPodNum: 0
+      availablePodNum: 10
+      name: group2
+    resourcePoolStatus: ready
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""
