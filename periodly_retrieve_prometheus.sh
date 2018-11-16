@@ -7,4 +7,5 @@ es2csv -q @'./log.json' -r -u http://localhost:8001/api/v1/namespaces/hawq-monit
 es2csv -q @'./log.json' -r -u http://localhost:8001/api/v1/namespaces/hawq-monitoring/services/elasticsearch-logging/proxy -i logstash-`date -d '-1 day' +%Y.%m.%d` -o /tmp/api-log-1.csv -k
 
 ./delete.sh prometheus-$1
-./to_db_prometheus.sh
+./to_db_prometheus.sh /tmp/prometheus.csv
+#rm /tmp/prometheus.csv
