@@ -43,7 +43,7 @@ create table if not exists k8s_prometheus_metrics (
     ds_ready boolean, 
     io_arch varchar(32), 
     io_hostname varchar(64), 
-    role varchar(32)
+    role_in_master varchar(32)
 );
 
 -- plan info 
