@@ -5,8 +5,8 @@
             "time": {
                 "gte" : "TIME_HOLDER",
                 "lte" : "now/s",
-		        "format": "yyyy-MM-dd HH:mm:ss",
-		        "time_zone": "+08:00"
+		"format": "yyyy-MM-dd HH:mm:ss",
+	        "time_zone": "+00:00"
             }
         }
         
