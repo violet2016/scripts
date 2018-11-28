@@ -10,6 +10,7 @@ class api_log_test(unittest.TestCase):
                 append_seg_list(all_lists, row)
         self.assertEqual(len(all_lists), 29)
         self.assertEqual(all_lists['qid-1176932765']['start_time'], '2018-11-27T05:42:36Z')
+        self.assertEqual(all_lists['qid-1176932765']['end_time'], '2018-11-27T05:42:36Z')
         self.assertEqual(len(all_lists['qid-1176932765']['list']), 1)
         self.assertNotEqual(len(all_lists['qid-1176932765']['plan']), 0)
 
