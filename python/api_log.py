@@ -82,7 +82,7 @@ def append_seg_list(all_lists, row):
                 else:
                     end_time = row[i]
     if query_id is not None and query_id not in all_lists.keys():
-        all_lists[query_id] = {}
+        all_lists[query_id] = {'start_time': None, 'end_time': None}
     if is_req:
         all_lists[query_id]['plan'] = plan
         all_lists[query_id]['max_seg'] = max_seg

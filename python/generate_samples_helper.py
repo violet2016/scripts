@@ -14,16 +14,17 @@ def query_segment_info(all_lists, db_connection):
                 cur.execute(command)
 
 def create_new_query_sample(all_lists, db_connection):
-    time_format = '%Y-%m-%dT%T%Z'
+    time_format = '%Y-%m-%dT%H:%M:%SZ'
     with db_connection.cursor() as cur:
          for query_id, query_info in all_lists.items():
-             start_time = datetime.strptime(query_info['start_time'], time_format)
-             end_time = datetime.strptime(query_info['end_time'], time_format)
-             timedelta = end_time - start_time
-             insert_query_sql = 'insert into exp_queries (query_id, start_time, end_time) values ( \
-                    \'%s\', timestamp with time zone \'%s\',timestamp with time zone \'%s\' )\
-                 ' % (query_id, query_info['start_time'], query_info['end_time'])
+             if query_info['start_time'] is not None and query_info['end_time'] is not None:
+                start_time = datetime.strptime(query_info['start_time'], time_format)
+                end_time = datetime.strptime(query_info['end_time'], time_format)
+                timedelta = end_time - start_time
+                insert_query_sql = 'insert into exp_queries (query_id, start_time, end_time) values ( \
+                        \'%s\', timestamp with time zone \'%s\',timestamp with time zone \'%s\' )\
+                    ' % (query_id, query_info['start_time'], query_info['end_time'])
                 
-             sample_sql = 'insert into samples (query_id, o_segment_number, o_exec_time) values (\'%s\', %s, %s)' % (query_id, len(query_info['list']), timedelta.second)
-             cur.execute(insert_query_sql)
-             cur.execute(sample_sql)
+                sample_sql = 'insert into samples (query_id, o_segment_number, o_exec_time) values (\'%s\', %s, %s)' % (query_id, len(query_info['list']), timedelta.second)
+                cur.execute(insert_query_sql)
+                cur.execute(sample_sql)
