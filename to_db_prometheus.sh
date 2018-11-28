@@ -1,3 +1,6 @@
+# put the prometheus csv file into database
+#
+#!/bin/bash
 if [[ "$OSTYPE" == "darwin"* ]]; then
 	sed -i '' '/scrape/d' $1
 	sed -i '' '/,linux,/d' $1

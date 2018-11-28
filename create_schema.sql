@@ -18,11 +18,11 @@ create table if not exists exp_queries(
     query_plan_hash varchar(64),
     start_time timestamp with time zone,
     end_time timestamp with time zone,
-    query_plan_rows integer,
-    total_exec_time_in_ms float,
+   -- query_plan_rows integer,
+   -- total_exec_time_in_ms float,
     success boolean default TRUE,
-    config_id integer references exp_config(id),
-    PRIMARY KEY (query_id, config_id));
+    -- config_id integer references exp_config(id),
+    PRIMARY KEY query_id);
 
 -- prometheus metrics logs
 create table if not exists k8s_prometheus_metrics (
@@ -64,4 +64,27 @@ create table if not exists query_segment_rel (
     config_id integer,
     hawq_query_id varchar(32),
     pod_name varchar(64)[]
+);
+
+-- samples table
+create table if not exists query_samples (
+    query_id integer,
+    o_segment_number integer,
+    o_segment_cpu_limit integer,
+    o_segment_cpu_req integer,
+    o_segment_mem_limit integer,
+    o_segment_mem_req integer,
+    o_segment_storage_limit integer,
+    o_segment_storage_req integer,
+    i_cpu_usage_max integer,
+    i_mem_usage_max integer,
+    i_plan_rows integer,
+    i_plan_ops integer[],
+    i_plan_op_nums integer[],
+    i_tables varchar(128)[],
+    i_tables_size real[],
+    i_columns_name varchar(128)[],
+    i_columns_type varchar(32)[],
+    i_columns_op integer[],
+    o_exec_time float,
 );
