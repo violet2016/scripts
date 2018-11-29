@@ -59,15 +59,15 @@ create table if not exists query_table_info (
     query_table_size real,
     PRIMARY KEY (query_db_size, query_table_name));
 
-create table if not exists query_segment_rel (
-    config_id integer,
-    hawq_query_id varchar(32),
-    pod_name varchar(64)[]
-);
+-- create table if not exists query_segment_rel (
+--     hawq_query_id varchar(32) PRIMARY KEY,
+--     pod_name varchar(64)[]
+-- );
 
 -- samples table
 create table if not exists query_samples (
     query_id varchar(32) PRIMARY KEY,
+    pod_ips cidr[],
     o_segment_number integer,
     o_segment_cpu_limit integer,
     o_segment_cpu_req integer,
@@ -77,12 +77,4 @@ create table if not exists query_samples (
     o_segment_storage_req integer,
     i_cpu_usage_max integer,
     i_mem_usage_max integer,
-    i_plan_rows integer,
-    i_plan_ops integer[],
-    i_plan_op_nums integer[],
-    i_tables varchar(128)[],
-    i_tables_size real[],
-    i_columns_name varchar(128)[],
-    i_columns_type varchar(32)[],
-    i_columns_op integer[],
     o_exec_time float);

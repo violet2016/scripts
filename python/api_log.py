@@ -102,6 +102,5 @@ if __name__ == '__main__':
         spamreader = csv.reader(csvfile, delimiter=',')
         for row in spamreader:
             append_seg_list(all_lists, row)
-        print(all_lists)
         create_new_query_sample(all_lists, db_config.myConnection)
         #insert into query and samples
