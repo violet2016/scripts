@@ -42,3 +42,10 @@ def create_new_query_sample(all_lists, db_connection):
             
             cur.execute(sample_sql)
             db_connection.commit()
+
+def update_segment_config(all_lists, db_connection):
+    with db_connection.cursor() as cur:
+        for pod_name, pod_info in all_lists.items():
+            insert_query = 'insert into exp_segments_info (pod_name, host_name, exp_time, ip) values (\'%s\',\'%s\', CURRENT_TIMESTAMP, \'%s\')' % (pod_name, pod_info['hostname'], pod_info['ip'])
+            cur.execute(insert_query)
+            db_connection.commit()

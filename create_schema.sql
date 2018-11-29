@@ -9,8 +9,8 @@ create table if not exists exp_config(
 create table if not exists exp_segments_info
 (pod_name varchar(64), host_name varchar(64), 
 exp_time timestamp with time zone, 
-ip cidr, 
-config_id integer references exp_config(id));
+ip cidr,
+PRIMARY KEY (pod_name, ip));
 
 -- exp_queries table represents every query runned in hawq
 create table if not exists exp_queries(

@@ -1,0 +1,25 @@
+NAME                                      READY     STATUS    RESTARTS   AGE       IP             NODE      NOMINATED NODE
+group1-0                                  1/1       Running   0          23h       10.244.1.145   bds12     <none>
+group1-1                                  1/1       Running   0          23h       10.244.2.12    bds1      <none>
+group1-10                                 1/1       Running   0          23h       10.244.2.17    bds1      <none>
+group1-11                                 1/1       Running   0          23h       10.244.1.148   bds12     <none>
+group1-12                                 1/1       Running   0          23h       10.244.1.150   bds12     <none>
+group1-13                                 1/1       Running   0          36m       10.244.7.224   bds13     <none>
+group1-14                                 1/1       Running   0          57m       10.244.7.219   bds13     <none>
+group1-15                                 1/1       Running   0          23h       10.244.2.16    bds1      <none>
+group1-16                                 1/1       Running   0          23h       10.244.1.147   bds12     <none>
+group1-17                                 1/1       Running   0          52m       10.244.7.220   bds13     <none>
+group1-18                                 1/1       Running   0          23h       10.244.1.151   bds12     <none>
+group1-19                                 1/1       Running   0          23h       10.244.2.18    bds1      <none>
+group1-2                                  1/1       Running   0          42m       10.244.7.223   bds13     <none>
+group1-3                                  1/1       Running   0          23h       10.244.2.13    bds1      <none>
+group1-4                                  1/1       Running   0          51m       10.244.7.222   bds13     <none>
+group1-5                                  1/1       Running   0          23h       10.244.1.146   bds12     <none>
+group1-6                                  1/1       Running   0          23h       10.244.2.14    bds1      <none>
+group1-7                                  1/1       Running   0          23h       10.244.1.149   bds12     <none>
+group1-8                                  1/1       Running   0          23h       10.244.2.19    bds1      <none>
+group1-9                                  1/1       Running   0          23h       10.244.2.15    bds1      <none>
+hawq-apiproxy-7f86448b75-7gclx            1/1       Running   0          23h       10.244.2.3     bds1      <none>
+hawq-master-0                             1/1       Running   0          25h       10.244.7.183   bds13     <none>
+hawq-rmcontroller-0                       1/1       Running   0          23h       10.244.1.143   bds12     <none>
+nfs-client-provisioner-5d46d78df6-n8xml   1/1       Running   0          23h       10.244.2.9     bds1      <none>

@@ -1,0 +1,51 @@
+Name:         hawq-resource-pool
+Namespace:    default
+Labels:       resourcepool=hawq-resource-pool
+Annotations:  <none>
+API Version:  rm.pivotaldata.io/v1alpha1
+Kind:         HAWQResourcePool
+Metadata:
+  Creation Timestamp:  2018-11-28T08:08:48Z
+  Generation:          1
+  Resource Version:    4090372
+  Self Link:           /apis/rm.pivotaldata.io/v1alpha1/namespaces/default/hawqresourcepools/hawq-resource-pool
+  UID:                 d554e38b-f2e4-11e8-8c1f-54781a877048
+Spec:
+  Allocate Policy:  FastAllocatePolicy
+  Auto Scale:
+    Decremental Ratio:    0
+    Incremental Ratio:    0
+    Max Segment Num:      0
+    Proactively Scale:    false
+    Scale Down Interval:  0
+    Scale Down Ratio:     0
+    Scale Up Interval:    0
+    Scale Up Ratio:       0
+    Turn On Auto Scale:   false
+  Groups:
+    Group Resource Limit:
+      Cpu:                1000
+      Ephemeral Storage:  1024
+      Memory:             1500
+    Group Size:           20
+    Name:                 group1
+  Image:                  hawqbeijing/hawq_for_rm:vcheng_lsp
+  Namespace:              default
+  Resource Capacity:
+    Cpu:                160000
+    Ephemeral Storage:  307200
+    Memory:             1214400
+  Selector:
+    Match Labels:
+      Resourcepool:  hawq-resource-pool
+Status:
+  Available Resource Status:
+    Cpu:                20000
+    Ephemeral Storage:  20480
+    Memory:             30000
+  Resource Group Status:
+    Allocated Pod Num:   0
+    Available Pod Num:   20
+    Name:                group1
+  Resource Pool Status:  ready
+Events:                  <none>
