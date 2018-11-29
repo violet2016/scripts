@@ -1,4 +1,5 @@
 import db_config
+import json
 from datetime import datetime
 
 
@@ -32,6 +33,9 @@ def create_new_query_sample(all_lists, db_connection):
                 cur.execute(update_query_sql)
             if query_info['end_time'] is not None:
                 update_query_sql = 'update exp_queries set end_time = timestamp with time zone \'%s\' where query_id = \'%s\'' % (query_info['end_time'], query_id)
+                cur.execute(update_query_sql)
+            if query_info['plan'] is not None:
+                update_query_sql = 'update exp_queries set plan = \'%s\' where query_id = \'%s\'' % (json.dumps(query_info['plan']), query_id)
                 cur.execute(update_query_sql)
             sample_sql = 'insert into query_samples (query_id, o_segment_number, o_exec_time) values (\'%s\', %s, %s)' % (query_id, len(query_info['list']), exec_time)
             

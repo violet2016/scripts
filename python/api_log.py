@@ -55,7 +55,7 @@ def append_seg_list(all_lists, row):
                 query_id = m0.group(2)
                 min_seg = m0.group(3)
                 max_seg = m0.group(4)
-                plan = m0.group(5)
+                plan = plan_to_json(m0.group(5))
                 is_req = True
                 is_start = False
                 continue
