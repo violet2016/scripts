@@ -31,7 +31,7 @@ def create_new_query_sample(all_lists, db_connection):
                 update_query_sql = 'update exp_queries set start_time = timestamp with time zone \'%s\' where query_id = \'%s\'' % (query_info['start_time'], query_id)
                 cur.execute(update_query_sql)
             if query_info['end_time'] is not None:
-                update_query_sql = 'update exp_queries set end_time = timestamp with time zone \'%s\' where query_id = %s' % (query_info['end_time'], query_id)
+                update_query_sql = 'update exp_queries set end_time = timestamp with time zone \'%s\' where query_id = \'%s\'' % (query_info['end_time'], query_id)
                 cur.execute(update_query_sql)
             sample_sql = 'insert into query_samples (query_id, o_segment_number, o_exec_time) values (\'%s\', %s, %s)' % (query_id, len(query_info['list']), exec_time)
             
