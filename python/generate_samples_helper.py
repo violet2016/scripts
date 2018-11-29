@@ -37,8 +37,8 @@ def create_new_query_sample(all_lists, db_connection):
             if query_info['plan'] is not None:
                 update_query_sql = 'update exp_queries set query_plan = \'%s\' where query_id = \'%s\'' % (json.dumps(query_info['plan']), query_id)
                 cur.execute(update_query_sql)
-            list_string = ', '.join('\'{0}\''.format(w) for w in query_info['list'])
-            sample_sql = 'insert into query_samples (query_id, pod_ips, o_segment_number, o_exec_time) values (\'%s\', \'{%s}\' %s, %s)' % (query_id, list_string, len(query_info['list']), exec_time)
+            list_string = ', '.join(query_info['list'])
+            sample_sql = 'insert into query_samples (query_id, pod_ips, o_segment_number, o_exec_time) values (\'%s\', \'{%s}\', %s, %s)' % (query_id, list_string, len(query_info['list']), exec_time)
             
             cur.execute(sample_sql)
             db_connection.commit()
