@@ -36,3 +36,4 @@ def create_new_query_sample(all_lists, db_connection):
             sample_sql = 'insert into query_samples (query_id, o_segment_number, o_exec_time) values (\'%s\', %s, %s)' % (query_id, len(query_info['list']), exec_time)
             
             cur.execute(sample_sql)
+            db_connection.commit()

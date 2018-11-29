@@ -15,7 +15,7 @@ config_id integer references exp_config(id));
 -- exp_queries table represents every query runned in hawq
 create table if not exists exp_queries(
     query_id varchar(32) PRIMARY KEY,
-    query_plan_hash varchar(64),
+    query_plan json,
     start_time timestamp with time zone,
     end_time timestamp with time zone,
    -- query_plan_rows integer,
