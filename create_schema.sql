@@ -14,15 +14,14 @@ config_id integer references exp_config(id));
 
 -- exp_queries table represents every query runned in hawq
 create table if not exists exp_queries(
-    query_id varchar(32),
+    query_id varchar(32) PRIMARY KEY,
     query_plan_hash varchar(64),
     start_time timestamp with time zone,
     end_time timestamp with time zone,
    -- query_plan_rows integer,
    -- total_exec_time_in_ms float,
-    success boolean default TRUE,
-    -- config_id integer references exp_config(id),
-    PRIMARY KEY query_id);
+    success boolean default TRUE);
+    -- config_id integer references exp_config(id)
 
 -- prometheus metrics logs
 create table if not exists k8s_prometheus_metrics (
@@ -68,7 +67,7 @@ create table if not exists query_segment_rel (
 
 -- samples table
 create table if not exists query_samples (
-    query_id integer,
+    query_id varchar(32) PRIMARY KEY,
     o_segment_number integer,
     o_segment_cpu_limit integer,
     o_segment_cpu_req integer,
@@ -86,5 +85,4 @@ create table if not exists query_samples (
     i_columns_name varchar(128)[],
     i_columns_type varchar(32)[],
     i_columns_op integer[],
-    o_exec_time float,
-);
+    o_exec_time float);
