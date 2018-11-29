@@ -14,7 +14,7 @@ def parse_node_info(node_info):
     if m0 is None:
         print("Cannot match node info", node_info)
         return {}
-    n = {'name':m0.group(1) , 'min_cost': m0.group(2), 'max_cost': m0.group(3), 'rows': m0.group(4), 'width': m0.group(5)}
+    n = {'name':m0.group(1) , 'min_cost': float(m0.group(2)), 'max_cost': float(m0.group(3)), 'rows': int(m0.group(4)), 'width': int(m0.group(5))}
     return n
 def visit_all_plan(node):
     if node is not None:
@@ -26,11 +26,10 @@ def visit_all_plan(node):
     return node
 
 def plan_to_json(plan):
-    j0 = json.loads(plan)
+    j0 = json.loads(plan.encode('utf-8').decode('unicode-escape'))
     j = json.loads(j0)
     root = j['PLAN']
     j['PLAN'] = visit_all_plan(root)
-   
     return j
 
 def append_seg_list(all_lists, row):
