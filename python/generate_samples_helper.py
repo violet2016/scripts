@@ -25,10 +25,10 @@ def create_new_query_sample(all_lists, db_connection):
     with db_connection.cursor() as cur:
          for query_id, query_info in all_lists.items():
             exec_time = calc_time_delta(query_info['start_time'], query_info['end_time'])
-            insert_query_sql = 'insert into exp_queries (query_id) values (%s)' % (query_id)
+            insert_query_sql = 'insert into exp_queries (query_id) values (\'%s\')' % (query_id)
             cur.execute(insert_query_sql)
             if query_info['start_time'] is not None:
-                update_query_sql = 'update exp_queries set start_time = timestamp with time zone \'%s\' where query_id = %s' % (query_info['start_time'], query_id)
+                update_query_sql = 'update exp_queries set start_time = timestamp with time zone \'%s\' where query_id = \'%s\'' % (query_info['start_time'], query_id)
                 cur.execute(update_query_sql)
             if query_info['end_time'] is not None:
                 update_query_sql = 'update exp_queries set end_time = timestamp with time zone \'%s\' where query_id = %s' % (query_info['end_time'], query_id)
