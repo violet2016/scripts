@@ -20,9 +20,12 @@ def get_segment_list(ip_filename, yaml_file):
                 pod_list[name]['limit_cpu'] = groups['Group Resource Limit']['Cpu']
                 pod_list[name]['limit_mem'] = groups['Group Resource Limit']['Memory']
                 pod_list[name]['limit_storage'] = groups['Group Resource Limit']['Ephemeral Storage']
-                req_name = 'Group Resource Request'
-                if groups[req_name] is None:
-                    req_name = 'Group Resource Limit'
+                req_name = 'Group Resource Limit'
+                try:
+                    if groups['Group Resource Request'] is not None:
+                        req_name = 'Group Resource Request'
+                except:
+                    print("no limit in", name)
                 pod_list[name]['req_cpu'] = groups[req_name]['Cpu']
                 pod_list[name]['req_mem'] = groups[req_name]['Memory']
                 pod_list[name]['req_storage'] = groups[req_name]['Ephemeral Storage']
