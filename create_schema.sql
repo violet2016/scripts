@@ -13,9 +13,9 @@ ip cidr,
 limit_cpu integer,
 limit_mem integer,
 limit_storage integer,
-request_cpu integer,
-request_mem integer,
-request_storage integer,
+req_cpu integer,
+req_mem integer,
+req_storage integer,
 PRIMARY KEY (pod_name, ip));
 
 -- exp_queries table represents every query runned in hawq

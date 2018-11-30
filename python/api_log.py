@@ -14,7 +14,16 @@ def parse_node_info(node_info):
     if m0 is None:
         print("Cannot match node info", node_info)
         return {}
-    n = {'name':m0.group(1) , 'min_cost': float(m0.group(2)), 'max_cost': float(m0.group(3)), 'rows': int(m0.group(4)), 'width': int(m0.group(5))}
+    whole_node_name = m0.group(1)
+    node_name = whole_node_name
+    table = ''
+    name_regex = r'^(.*?) on (\w*?)$'
+    name_match = re.search(name_regex, whole_node_name)
+    
+    if name_match is not None:
+        node_name = name_match.group(1)
+        table = name_match.group(2)
+    n = {'name':node_name, 'table':table, 'min_cost': float(m0.group(2)), 'max_cost': float(m0.group(3)), 'rows': int(m0.group(4)), 'width': int(m0.group(5))}
     return n
 def visit_all_plan(node):
     if node is not None:
