@@ -10,6 +10,12 @@ create table if not exists exp_segments_info
 (pod_name varchar(64), host_name varchar(64), 
 exp_time timestamp with time zone, 
 ip cidr,
+limit_cpu integer,
+limit_mem integer,
+limit_storage integer,
+request_cpu integer,
+request_mem integer,
+request_storage integer,
 PRIMARY KEY (pod_name, ip));
 
 -- exp_queries table represents every query runned in hawq

@@ -46,6 +46,6 @@ def create_new_query_sample(all_lists, db_connection):
 def update_segment_config(all_lists, db_connection):
     with db_connection.cursor() as cur:
         for pod_name, pod_info in all_lists.items():
-            insert_query = 'insert into exp_segments_info (pod_name, host_name, exp_time, ip) values (\'%s\',\'%s\', CURRENT_TIMESTAMP, \'%s\')' % (pod_name, pod_info['hostname'], pod_info['ip'])
+            insert_query = 'insert into exp_segments_info (pod_name, host_name, exp_time, ip, limit_cpu, limit_mem, limit_storage, req_cpu, req_mem, req_storage) values (\'%s\',\'%s\', CURRENT_TIMESTAMP, \'%s\', %s, %s, %s, %s, %s, %s)' % (pod_name, pod_info['hostname'], pod_info['ip'], pod_info['limit_cpu'], pod_info['limit_mem'], pod_info['limit_storage'], pod_info['req_cpu'], pod_info['req_mem'], pod_info['req_storage'])
             cur.execute(insert_query)
             db_connection.commit()
