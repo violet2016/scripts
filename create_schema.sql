@@ -26,7 +26,7 @@ create table if not exists exp_queries(
     end_time timestamp with time zone,
    -- query_plan_rows integer,
    -- total_exec_time_in_ms float,
-    success boolean default TRUE
+    success boolean default TRUE,
     PRIMARY KEY (query_id, start_time));
     -- config_id integer references exp_config(id)
 
@@ -51,6 +51,23 @@ create table if not exists k8s_prometheus_metrics (
     io_hostname varchar(64), 
     role_in_master varchar(32)
 );
+create table k8s_prometheus_metrics_d_2018_12_03
+    (check (sample_time >= date '2018-12-03' and sample_time <= date '2018-12-04'))
+    inherits (k8s_prometheus_metrics);
+
+create index k8s_prometheus_metrics_2018_12_03_sample_time on k8s_prometheus_metrics using btree (sample_time);
+CREATE OR REPLACE FUNCTION k8s_prometheus_insert_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO k8s_prometheus_metrics_d_2018_12_03 VALUES (NEW.*);
+    RETURN NULL;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER k8s_prometheus_insert_trigger
+    BEFORE INSERT ON k8s_prometheus_metrics
+    FOR EACH ROW EXECUTE PROCEDURE k8s_prometheus_insert_trigger();
 
 -- plan info 
 create table if not exists query_plan_info (
