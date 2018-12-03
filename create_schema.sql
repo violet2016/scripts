@@ -16,17 +16,18 @@ limit_storage integer,
 req_cpu integer,
 req_mem integer,
 req_storage integer,
-PRIMARY KEY (pod_name, ip));
+PRIMARY KEY (pod_name, ip, exp_time));
 
 -- exp_queries table represents every query runned in hawq
 create table if not exists exp_queries(
-    query_id varchar(32) PRIMARY KEY,
+    query_id varchar(32),
     query_plan json,
     start_time timestamp with time zone,
     end_time timestamp with time zone,
    -- query_plan_rows integer,
    -- total_exec_time_in_ms float,
-    success boolean default TRUE);
+    success boolean default TRUE
+    PRIMARY KEY (query_id, start_time));
     -- config_id integer references exp_config(id)
 
 -- prometheus metrics logs

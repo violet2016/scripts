@@ -24,28 +24,34 @@ def calc_time_delta(start, end):
     return 0
 def create_new_query_sample(all_lists, db_connection):
     with db_connection.cursor() as cur:
-         for query_id, query_info in all_lists.items():
-            exec_time = calc_time_delta(query_info['start_time'], query_info['end_time'])
-            insert_query_sql = 'insert into exp_queries (query_id) values (\'%s\')' % (query_id)
-            cur.execute(insert_query_sql)
-            if query_info['start_time'] is not None:
-                update_query_sql = 'update exp_queries set start_time = timestamp with time zone \'%s\' where query_id = \'%s\'' % (query_info['start_time'], query_id)
-                cur.execute(update_query_sql)
-            if query_info['end_time'] is not None:
-                update_query_sql = 'update exp_queries set end_time = timestamp with time zone \'%s\' where query_id = \'%s\'' % (query_info['end_time'], query_id)
-                cur.execute(update_query_sql)
-            if query_info['plan'] is not None:
-                update_query_sql = 'update exp_queries set query_plan = \'%s\' where query_id = \'%s\'' % (json.dumps(query_info['plan']), query_id)
-                cur.execute(update_query_sql)
-            list_string = ', '.join(query_info['list'])
-            sample_sql = 'insert into query_samples (query_id, pod_ips, o_segment_number, o_exec_time) values (\'%s\', \'{%s}\', %s, %s)' % (query_id, list_string, len(query_info['list']), exec_time)
-            
-            cur.execute(sample_sql)
-            db_connection.commit()
+        for query_id, query_info in all_lists.items():
+            try:
+                exec_time = calc_time_delta(query_info['start_time'], query_info['end_time'])
+                insert_query_sql = 'insert into exp_queries (query_id) values (\'%s\')' % (query_id)
+                cur.execute(insert_query_sql)
+                if query_info['start_time'] is not None:
+                    update_query_sql = 'update exp_queries set start_time = timestamp with time zone \'%s\' where query_id = \'%s\'' % (query_info['start_time'], query_id)
+                    cur.execute(update_query_sql)
+                if query_info['end_time'] is not None:
+                    update_query_sql = 'update exp_queries set end_time = timestamp with time zone \'%s\' where query_id = \'%s\'' % (query_info['end_time'], query_id)
+                    cur.execute(update_query_sql)
+                if query_info['plan'] is not None:
+                    update_query_sql = 'update exp_queries set query_plan = \'%s\' where query_id = \'%s\'' % (json.dumps(query_info['plan']), query_id)
+                    cur.execute(update_query_sql)
+                list_string = ', '.join(query_info['list'])
+                sample_sql = 'insert into query_samples (query_id, pod_ips, o_segment_number, o_exec_time) values (\'%s\', \'{%s}\', %s, %s)' % (query_id, list_string, len(query_info['list']), exec_time)
+                
+                cur.execute(sample_sql)
+                db_connection.commit()
+            except:
+                continue
 
 def update_segment_config(all_lists, db_connection):
     with db_connection.cursor() as cur:
         for pod_name, pod_info in all_lists.items():
-            insert_query = 'insert into exp_segments_info (pod_name, host_name, exp_time, ip, limit_cpu, limit_mem, limit_storage, req_cpu, req_mem, req_storage) values (\'%s\',\'%s\', CURRENT_TIMESTAMP, \'%s\', %s, %s, %s, %s, %s, %s)' % (pod_name, pod_info['hostname'], pod_info['ip'], pod_info['limit_cpu'], pod_info['limit_mem'], pod_info['limit_storage'], pod_info['req_cpu'], pod_info['req_mem'], pod_info['req_storage'])
-            cur.execute(insert_query)
-            db_connection.commit()
+            try:
+                insert_query = 'insert into exp_segments_info (pod_name, host_name, exp_time, ip, limit_cpu, limit_mem, limit_storage, req_cpu, req_mem, req_storage) values (\'%s\',\'%s\', CURRENT_TIMESTAMP, \'%s\', %s, %s, %s, %s, %s, %s)' % (pod_name, pod_info['hostname'], pod_info['ip'], pod_info['limit_cpu'], pod_info['limit_mem'], pod_info['limit_storage'], pod_info['req_cpu'], pod_info['req_mem'], pod_info['req_storage'])
+                cur.execute(insert_query)
+                db_connection.commit()
+            except:
+                continue
