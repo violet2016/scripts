@@ -46,7 +46,7 @@ def create_new_query_sample(all_lists, db_connection):
                 db_connection.commit()
             except (Exception, psycopg2.DatabaseError) as error:
                 print('error happened', error)
-                cur.rollback()
+                db_connection.rollback()
                 continue
             except:
                 continue

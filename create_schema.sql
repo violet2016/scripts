@@ -85,7 +85,8 @@ create table if not exists query_table_info (
 
 -- samples table
 create table if not exists query_samples (
-    query_id varchar(32) PRIMARY KEY,
+    query_id varchar(32),
+    cluster cidr,
     pod_ips cidr[],
     o_segment_number integer,
     o_segment_cpu_limit integer,
@@ -96,4 +97,5 @@ create table if not exists query_samples (
     o_segment_storage_req integer,
     i_cpu_usage_max integer,
     i_mem_usage_max integer,
-    o_exec_time float);
+    o_exec_time float,
+    PRIMARY KEY (query_id, cluster));
