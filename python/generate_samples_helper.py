@@ -26,6 +26,8 @@ def create_new_query_sample(all_lists, db_connection):
     with db_connection.cursor() as cur:
         for query_id, query_info in all_lists.items():
             try:
+                if query_info['cluster'] is None:
+                    continue
                 exec_time = calc_time_delta(query_info['start_time'], query_info['end_time'])
                 insert_query_sql = 'insert into exp_queries (query_id) values (\'%s\')' % (query_id)
                 cur.execute(insert_query_sql)
@@ -45,6 +47,8 @@ def create_new_query_sample(all_lists, db_connection):
                 db_connection.commit()
             except (Exception, psycopg2.DatabaseError) as error:
                 print('error happened', error)
+                continue
+            except:
                 continue
 
 def update_segment_config(all_lists, db_connection):
