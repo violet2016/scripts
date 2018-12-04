@@ -21,13 +21,14 @@ PRIMARY KEY (pod_name, ip, exp_time));
 -- exp_queries table represents every query runned in hawq
 create table if not exists exp_queries(
     query_id varchar(32),
+    cluster cidr,
     query_plan json,
     start_time timestamp with time zone,
     end_time timestamp with time zone,
    -- query_plan_rows integer,
    -- total_exec_time_in_ms float,
     success boolean default TRUE,
-    PRIMARY KEY (query_id, start_time));
+    PRIMARY KEY (query_id, cluster));
     -- config_id integer references exp_config(id)
 
 -- prometheus metrics logs

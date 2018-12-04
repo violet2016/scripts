@@ -1,7 +1,7 @@
 import db_config
 import json
 from datetime import datetime
-
+import psycopg2
 
 def query_segment_info(all_lists, db_connection):
     with db_connection.cursor() as cur:
@@ -39,11 +39,12 @@ def create_new_query_sample(all_lists, db_connection):
                     update_query_sql = 'update exp_queries set query_plan = \'%s\' where query_id = \'%s\'' % (json.dumps(query_info['plan']), query_id)
                     cur.execute(update_query_sql)
                 list_string = ', '.join(query_info['list'])
-                sample_sql = 'insert into query_samples (query_id, pod_ips, o_segment_number, o_exec_time) values (\'%s\', \'{%s}\', %s, %s)' % (query_id, list_string, len(query_info['list']), exec_time)
+                sample_sql = 'insert into query_samples (query_id, cluster, pod_ips, o_segment_number, o_exec_time) values (\'%s\', \'%s\', \'{%s}\', %s, %s)' % (query_id, query_info['cluster'], list_string, len(query_info['list']), exec_time)
                 
                 cur.execute(sample_sql)
                 db_connection.commit()
-            except:
+            except (Exception, psycopg2.DatabaseError) as error:
+                print('error happened', error)
                 continue
 
 def update_segment_config(all_lists, db_connection):
@@ -55,3 +56,19 @@ def update_segment_config(all_lists, db_connection):
                 db_connection.commit()
             except:
                 continue
+
+# def update_query_sample_resource_usage(db_connection):
+#     # TODO group name make not be fixed to start with group
+#     sql = "update query_samples set cpu_percent_list = t2.cpu_percent_list, \
+#     From (select array_agg(percent) as cpu_percent_list, total_exec_time_in_ms, config_id, query_id  \
+#            from (
+#             select metrics_name, q.query_id,
+#             cast(100000 as decimal)* (max(metrics_value)-min(metrics_value))/(extract('epoch' from q.end_time)  - extract('epoch' from q.start_time) ) as cpu_max, 
+#             k.pod_name from k8s_prometheus_metrics k, exp_queries q 
+#             where sample_time > q.start_time and sample_time < q.end_time and  
+#             metrics_name = 'container_cpu_user_seconds_total' and metrics_value > 0 and k.pod_name like 'group%%'
+#             group by k.pod_name, metrics_name, q.end_time, q.start_time, q.query_id
+#             ) as t1 where case when total_exec_time_in_ms < 15000 then true else t1.percent > 1  end group by total_exec_time_in_ms, config_id, query_id) as t2
+# WHERE query_samples.query_id= t2.query_id
+#         ;
+# "

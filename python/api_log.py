@@ -6,7 +6,8 @@ import subprocess
 import fnmatch
 import db_config
 import json
-from generate_samples_helper import *
+from generate_samples_helper import create_new_query_sample
+
 def parse_node_info(node_info):
     # Gather Motion  (cost=1726765.38..1726765.44 rows=25 width=136)\n
     node_regex = r'^(.*?)\W*\(cost=([\d\.]+?)\.\.([\d\.]+?)\W+rows=(\d*?)\W+width=(\d*?)\)'
