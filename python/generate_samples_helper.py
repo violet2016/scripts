@@ -61,18 +61,30 @@ def update_segment_config(all_lists, db_connection):
             except:
                 continue
 
-# def update_query_sample_resource_usage(db_connection):
-#     # TODO group name make not be fixed to start with group
-#     sql = "update query_samples set cpu_percent_list = t2.cpu_percent_list, \
-#     From (select array_agg(percent) as cpu_percent_list, total_exec_time_in_ms, config_id, query_id  \
-#            from (
-#             select metrics_name, q.query_id,
-#             cast(100000 as decimal)* (max(metrics_value)-min(metrics_value))/(extract('epoch' from q.end_time)  - extract('epoch' from q.start_time) ) as cpu_max, 
-#             k.pod_name from k8s_prometheus_metrics k, exp_queries q 
-#             where sample_time > q.start_time and sample_time < q.end_time and  
-#             metrics_name = 'container_cpu_user_seconds_total' and metrics_value > 0 and k.pod_name like 'group%%'
-#             group by k.pod_name, metrics_name, q.end_time, q.start_time, q.query_id
-#             ) as t1 where case when total_exec_time_in_ms < 15000 then true else t1.percent > 1  end group by total_exec_time_in_ms, config_id, query_id) as t2
-# WHERE query_samples.query_id= t2.query_id
-#         ;
-# "
+def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
+    # TODO group name make not be fixed to start with group
+    with db_connection.cursor() as cur:
+        ips_sql = "select pod_ips from query_samples where query_id = '%s'" % (id)
+        cur.execute(ips_sql)
+        rows = cur.fetchall()
+        if rows is None or len(rows) == 0:
+            return
+        pods_ips = rows[0]
+    # pod_names_sql = "select pod_name, ip from ( \
+    #         select distinct ON (pod_name) * from exp_segments_info where exp_time < '%s') \
+    #         as sub where ip in (%s) order by exp_time desc" % (start_time, ips)
+
+    # metrics_name_list = ['container_cpu_user_seconds_total']
+   
+    # get_diff_metrics_sql = "select metrics_name, max(metric_diff) as diff \
+    #                         from ( \
+    #                         select k.metrics_name,\
+    #                         (max(k.metrics_value)-min(k.metrics_value)) as metric_diff, \
+    #                         k.pod_name from k8s_prometheus_metrics k \
+    #                         where sample_time > '%s' and sample_time < '%s' and pod_name in (%s) \
+    #                         metrics_name in (%s) and metrics_value > 0 and k.pod_name like 'group%%' and container_name not in ('','POD') \
+    #                         group by k.pod_name, k.metrics_name \
+    #                         ) as t1 group by metrics_name \
+    #                         ) as t2" % (start_time, end_time, pod_name_list_string, metrics_name_string)
+
+    # update_sql = "update query_samples set i_cpu_usage_max = %s, i_mem_usage_max = %s" % (cpu, memory)
