@@ -96,8 +96,7 @@ def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
                                 where sample_time > '%s' and sample_time < '%s' and metrics_name in (%s) and pod_name in (%s) and \
                                 metrics_value > 0 and k.pod_name like 'group%%' and container_name not in ('','POD') \
                                 group by k.pod_name, k.metrics_name \
-                                ) as t1 group by metrics_name \
-                                ) as t2" % (start_time, end_time,  metrics_name_string, pod_name_list_string,)
+                                ) as t1 group by metrics_name" % (start_time, end_time,  metrics_name_string, pod_name_list_string,)
         cur.execute(get_diff_metrics_sql)
         rows = cur.fetchall()
         if rows is None or len(rows) == 0:
