@@ -93,7 +93,7 @@ def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
                                 select k.metrics_name,\
                                 (max(k.metrics_value)-min(k.metrics_value)) as metric_diff, \
                                 k.pod_name from k8s_prometheus_metrics k \
-                                where sample_time > '%s' and sample_time < '%s' and metrics_name in (%s) and pod_name in (%s) \
+                                where sample_time > '%s' and sample_time < '%s' and metrics_name in (%s) and pod_name in (%s) and \
                                 metrics_value > 0 and k.pod_name like 'group%%' and container_name not in ('','POD') \
                                 group by k.pod_name, k.metrics_name \
                                 ) as t1 group by metrics_name \
