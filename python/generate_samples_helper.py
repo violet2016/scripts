@@ -79,23 +79,38 @@ def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
             as sub where ip in (%s) order by exp_time desc" % (start_time, start_time, ips)
         cur.execute(pod_names_sql)
         rows = cur.fetchall()
-        if rows is None or len(rows) == 0:
+        pod_names = []
+        if rows is None or len(rows) == len(pods_ips):
             return
         for r in rows:
-            print(r)
-    # metrics_name_list = ['container_cpu_user_seconds_total']
-   
-    # get_diff_metrics_sql = "select metrics_name, max(metric_diff) as diff \
-    #                         from ( \
-    #                         select k.metrics_name,\
-    #                         (max(k.metrics_value)-min(k.metrics_value)) as metric_diff, \
-    #                         k.pod_name from k8s_prometheus_metrics k \
-    #                         where sample_time > '%s' and sample_time < '%s' and pod_name in (%s) \
-    #                         metrics_name in (%s) and metrics_value > 0 and k.pod_name like 'group%%' and container_name not in ('','POD') \
-    #                         group by k.pod_name, k.metrics_name \
-    #                         ) as t1 group by metrics_name \
-    #                         ) as t2" % (start_time, end_time, pod_name_list_string, metrics_name_string)
-
-    # update_sql = "update query_samples set i_cpu_usage_max = %s, i_mem_usage_max = %s" % (cpu, memory)
+            pod_names.append(r[0])
+        pod_name_list_string = concat_surround_with_quotes(pod_names)
+        
+        metrics_name_list = ['container_cpu_user_seconds_total', 'container_cpu_system_seconds_total']
+        metrics_name_string = concat_surround_with_quotes(metrics_name_list)
+        get_diff_metrics_sql = "select metrics_name, max(metric_diff) as diff \
+                                from ( \
+                                select k.metrics_name,\
+                                (max(k.metrics_value)-min(k.metrics_value)) as metric_diff, \
+                                k.pod_name from k8s_prometheus_metrics k \
+                                where sample_time > '%s' and sample_time < '%s' and metrics_name in (%s) and pod_name in (%s) \
+                                metrics_value > 0 and k.pod_name like 'group%%' and container_name not in ('','POD') \
+                                group by k.pod_name, k.metrics_name \
+                                ) as t1 group by metrics_name \
+                                ) as t2" % (start_time, end_time, pod_name_list_string, metrics_name_string)
+        cur.execute(get_diff_metrics_sql)
+        rows = cur.fetchall()
+        cpu_user = None
+        cpu_system = None
+        for r in rows:
+            if r[0] == 'container_cpu_user_seconds_total':
+                cpu_user = r[1]
+            elif r[0] == 'container_cpu_system_seconds_total':
+                cpu_system = r[1]
+        update_sql = "update query_samples set i_cpu_usage_max = %s" % (cpu_user+cpu_system)
+        print(update_sql)
+        cur.execute(update_sql)
+        db_connection.commit()
+    
 if __name__ == '__main__':
     update_query_sample_resource_usage(db_config.myConnection, 'qid-850328167', '2018-12-05 05:46:31+00', '2018-12-05 05:48:49+00')
