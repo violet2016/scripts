@@ -106,11 +106,14 @@ def append_seg_list(all_lists, row):
 
 
 if __name__ == '__main__':
-    api_file = sys.argv[1]
+    api_files = []
+    for f in sys.argv[1:len(sys.argv)-1]:
+        api_files.append(f)
     all_lists = {}
-    with open(api_file, mode='r') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=',')
-        for row in spamreader:
-            append_seg_list(all_lists, row)
-        create_new_query_sample(all_lists, db_config.myConnection)
+    for api_file in api_files:
+        with open(api_file, mode='r') as csvfile:
+            spamreader = csv.reader(csvfile, delimiter=',')
+            for row in spamreader:
+                append_seg_list(all_lists, row)
+            create_new_query_sample(all_lists, db_config.myConnection)
         #insert into query and samples
