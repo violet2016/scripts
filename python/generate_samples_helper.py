@@ -75,8 +75,8 @@ def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
         pods_ips = rows[0][0]
         ips = concat_surround_with_quotes(pods_ips)
         pod_names_sql = "select pod_name from ( \
-            select distinct ON (pod_name) * from exp_segments_info where exp_time < '%s') \
-            as sub where ip in (%s) order by exp_time desc" % (start_time, ips)
+            select distinct ON (pod_name) * from exp_segments_info where exp_time < '%s' and exp_time >= timestamp'%s' - interval '1h') \
+            as sub where ip in (%s) order by exp_time desc" % (start_time, start_time, ips)
         cur.execute(pod_names_sql)
         rows = cur.fetchall()
         if rows is None or len(rows) == 0:
