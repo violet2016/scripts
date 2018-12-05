@@ -60,6 +60,9 @@ def update_segment_config(all_lists, db_connection):
                 db_connection.commit()
             except:
                 continue
+def concat_surround_with_quotes(strings):
+    result = ', '.join('\'' + item + '\'' for item in strings)
+    return result
 
 def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
     # TODO group name make not be fixed to start with group
@@ -69,11 +72,17 @@ def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
         rows = cur.fetchall()
         if rows is None or len(rows) == 0:
             return
-        pods_ips = rows[0]
-    # pod_names_sql = "select pod_name, ip from ( \
-    #         select distinct ON (pod_name) * from exp_segments_info where exp_time < '%s') \
-    #         as sub where ip in (%s) order by exp_time desc" % (start_time, ips)
-
+        pods_ips = rows[0][0]
+        ips = concat_surround_with_quotes(pods_ips)
+        pod_names_sql = "select pod_name from ( \
+            select distinct ON (pod_name) * from exp_segments_info where exp_time < '%s') \
+            as sub where ip in (%s) order by exp_time desc" % (start_time, ips)
+        cur.execute(pod_names_sql)
+        rows = cur.fetchall()
+        if rows is None or len(rows) == 0:
+            return
+        for r in rows:
+            print(r)
     # metrics_name_list = ['container_cpu_user_seconds_total']
    
     # get_diff_metrics_sql = "select metrics_name, max(metric_diff) as diff \
@@ -88,3 +97,5 @@ def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
     #                         ) as t2" % (start_time, end_time, pod_name_list_string, metrics_name_string)
 
     # update_sql = "update query_samples set i_cpu_usage_max = %s, i_mem_usage_max = %s" % (cpu, memory)
+if __name__ == '__main__':
+    update_query_sample_resource_usage(db_config.myConnection, 'qid-850328167', '2018-12-05 05:46:31+00', '2018-12-05 05:48:49+00')
