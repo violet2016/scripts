@@ -46,7 +46,7 @@ def create_new_query_sample(all_lists, db_connection):
                 update_query_sample_resource_usage(db_connection, query_id, query_info['start_time'], query_info['end_time'])
                 db_connection.commit()
             except (Exception, psycopg2.DatabaseError) as error:
-                print('error happened', error, query_id, query_info)
+                print('error happened', error, query_id)
                 db_connection.rollback()
                 continue
             except:
@@ -88,10 +88,8 @@ def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
         cur.execute(pod_names_sql)
         rows = cur.fetchall()
         pod_names = []
-        if rows is None or len(rows) != len(pods_ips):
-            print("ip and name not match %s, len %d %d" %(id, len(rows), len(pods_ips)))
-            print(pods_ips)
-            print(rows)
+        if rows is None or len(rows) == 0:
+            print("pod name query no result")
             return
         for r in rows:
             pod_names.append(r[0])
