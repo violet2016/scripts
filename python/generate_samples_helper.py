@@ -43,6 +43,7 @@ def create_new_query_sample(all_lists, db_connection):
                 sample_sql = 'insert into query_samples (query_id, cluster, pod_ips, o_segment_number, o_exec_time) values (\'%s\', \'%s\', \'{%s}\', %s, %s)' % (query_id, query_info['cluster'], list_string, len(query_info['list']), exec_time)
                 
                 cur.execute(sample_sql)
+                update_query_sample_resource_usage(db_connection, query_id, query_info['start_time'], query_info['end_time'])
                 db_connection.commit()
             except (Exception, psycopg2.DatabaseError) as error:
                 print('error happened', error)
@@ -86,12 +87,13 @@ def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
             pod_names.append(r[0])
         pod_name_list_string = concat_surround_with_quotes(pod_names)
         
-        metrics_name_list = ['container_cpu_user_seconds_total', 'container_cpu_system_seconds_total']
+        metrics_name_list = ['container_cpu_user_seconds_total', 'container_cpu_system_seconds_total', 'container_memory_usage_bytes']
         metrics_name_string = concat_surround_with_quotes(metrics_name_list)
         get_diff_metrics_sql = "select metrics_name, max(metric_diff) as diff \
                                 from ( \
-                                select k.metrics_name,\
+                                select k.metrics_name, \
                                 (max(k.metrics_value)-min(k.metrics_value)) as metric_diff, \
+                                max(k.metrics_value) as max, \
                                 k.pod_name from k8s_prometheus_metrics k \
                                 where sample_time > '%s' and sample_time < '%s' and metrics_name in (%s) and pod_name in (%s) and \
                                 metrics_value > 0 and k.pod_name like 'group%%' and container_name not in ('','POD') \
@@ -103,15 +105,13 @@ def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
             return
         cpu_user = None
         cpu_system = None
+        memory = None
         for r in rows:
             if r[0] == 'container_cpu_user_seconds_total':
                 cpu_user = r[1]
             elif r[0] == 'container_cpu_system_seconds_total':
                 cpu_system = r[1]
-        update_sql = "update query_samples set i_cpu_usage_max = %s" % (cpu_user+cpu_system)
-        print(update_sql)
+            elif r[0] == 'container_memory_usage_bytes':
+                memory = r[2]
+        update_sql = "update query_samples set i_cpu_usage_max = %s, i_mem_usage_max = %s" % (cpu_user+cpu_system, memory)
         cur.execute(update_sql)
-        db_connection.commit()
-    
-if __name__ == '__main__':
-    update_query_sample_resource_usage(db_config.myConnection, 'qid-850328167', '2018-12-05 05:46:31+00', '2018-12-05 05:48:49+00')
