@@ -66,6 +66,9 @@ def concat_surround_with_quotes(strings):
     return result
 
 def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
+    if end_time is None or start_time is None:
+        print("time is none %s" % id)
+        return
     # TODO group name make not be fixed to start with group
     with db_connection.cursor() as cur:
         ips_sql = "select pod_ips from query_samples where query_id = '%s'" % (id)
@@ -86,7 +89,7 @@ def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
         rows = cur.fetchall()
         pod_names = []
         if rows is None or len(rows) != len(pods_ips):
-            print("ip and name not match %s" %id)
+            print("ip and name not match %s, len " %id)
             return
         for r in rows:
             pod_names.append(r[0])
