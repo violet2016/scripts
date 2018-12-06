@@ -89,7 +89,9 @@ def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
         rows = cur.fetchall()
         pod_names = []
         if rows is None or len(rows) != len(pods_ips):
-            print("ip and name not match %s, len " %id)
+            print("ip and name not match %s, len %d %d" %(id, len(rows), len(pods_ips)))
+            print(pods_ips)
+            print(rows)
             return
         for r in rows:
             pod_names.append(r[0])
