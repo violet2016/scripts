@@ -72,8 +72,12 @@ def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
         cur.execute(ips_sql)
         rows = cur.fetchall()
         if rows is None or len(rows) == 0:
+            print("did not find the query in sample %s" % id)
             return
         pods_ips = rows[0][0]
+        if len(pods_ips) == 0:
+            print("pod ip list is empty %s" % id)
+            return
         ips = concat_surround_with_quotes(pods_ips)
         pod_names_sql = "select pod_name from ( \
             select distinct ON (pod_name) * from exp_segments_info where exp_time < '%s' and exp_time >= timestamp'%s' - interval '1h') \
@@ -81,7 +85,8 @@ def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
         cur.execute(pod_names_sql)
         rows = cur.fetchall()
         pod_names = []
-        if rows is None or len(rows) == len(pods_ips):
+        if rows is None or len(rows) != len(pods_ips):
+            print("ip and name not match %s" %id)
             return
         for r in rows:
             pod_names.append(r[0])
@@ -102,6 +107,7 @@ def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
         cur.execute(get_diff_metrics_sql)
         rows = cur.fetchall()
         if rows is None or len(rows) == 0:
+            print("cannot find any metrics for query exec period %d start %s end %s", id, start_time, end_time)
             return
         cpu_user = None
         cpu_system = None
@@ -113,5 +119,5 @@ def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
                 cpu_system = r[1]
             elif r[0] == 'container_memory_usage_bytes':
                 memory = r[2]
-        update_sql = "update query_samples set i_cpu_usage_max = %s, i_mem_usage_max = %s" % (cpu_user+cpu_system, memory)
+        update_sql = "update query_samples set i_cpu_usage_max = %s, i_mem_usage_max = %s where query_id = '%s'" % (cpu_user+cpu_system, memory, id)
         cur.execute(update_sql)
