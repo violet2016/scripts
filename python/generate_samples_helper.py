@@ -42,14 +42,15 @@ def create_new_query_sample(all_lists, db_connection):
                 if query_info['plan'] is not None:
                     update_query_sql = 'update exp_queries set query_plan = \'%s\' where query_id = \'%s\'' % (json.dumps(query_info['plan']), query_id)
                     cur.execute(update_query_sql)
-                list_string = ', '.join(query_info['list'])
-                sample_sql = 'insert into query_samples (query_id, cluster, pod_ips, o_segment_number, o_exec_time, error_msg) values (\'%s\', \'%s\', \'{%s}\', %s, %s, \'%s\')' % (query_id, query_info['cluster'], list_string, len(query_info['list']), exec_time, query_info['error_msg'])
-                
-                cur.execute(sample_sql)
-                update_query_sample_resource_usage(db_connection, query_id, query_info['start_time'], query_info['end_time'])
+                if query_info['end_time'] is not None:
+                    list_string = ', '.join(query_info['list'])
+                    sample_sql = 'insert into query_samples (query_id, cluster, pod_ips, o_segment_number, o_exec_time, error_msg) values (\'%s\', \'%s\', \'{%s}\', %s, %s, \'%s\')' % (query_id, query_info['cluster'], list_string, len(query_info['list']), exec_time, query_info['error_msg'])
+                    
+                    cur.execute(sample_sql)
+                    update_query_sample_resource_usage(db_connection, query_id, query_info['start_time'], query_info['end_time'])
                 db_connection.commit()
-            except (Exception, psycopg2.DatabaseError) as error:
-                print('error happened', error, query_id)
+            except (Exception, psycopg2.DatabaseError) as e:
+                print('error happened', e, query_id)
                 db_connection.rollback()
                 continue
             except:
