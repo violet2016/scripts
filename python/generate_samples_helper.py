@@ -114,7 +114,7 @@ def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
         cur.execute(get_diff_metrics_sql)
         rows = cur.fetchall()
         if rows is None or len(rows) == 0:
-            print("cannot find any metrics for query exec period %d start %s end %s" % (id, start_time, end_time))
+            print("cannot find any metrics for query exec period %s start %s end %s" % (id, start_time, end_time))
             return
         cpu_user = None
         cpu_system = None
