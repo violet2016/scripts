@@ -34,13 +34,16 @@ def create_new_query_sample(all_lists, db_connection):
                     update_query_sql = 'update exp_queries set start_time = timestamp with time zone \'%s\' where query_id = \'%s\'' % (query_info['start_time'], query_id)
                     cur.execute(update_query_sql)
                 if query_info['end_time'] is not None:
-                    update_query_sql = 'update exp_queries set end_time = timestamp with time zone \'%s\' where query_id = \'%s\'' % (query_info['end_time'], query_id)
+                    is_success = 'true'
+                    if len(query_info['error_msg']) > 0:
+                        is_success = 'false'
+                    update_query_sql = 'update exp_queries set end_time = timestamp, success = %s with time zone \'%s\' where query_id = \'%s\'' % (is_success, query_info['end_time'], query_id)
                     cur.execute(update_query_sql)
                 if query_info['plan'] is not None:
                     update_query_sql = 'update exp_queries set query_plan = \'%s\' where query_id = \'%s\'' % (json.dumps(query_info['plan']), query_id)
                     cur.execute(update_query_sql)
                 list_string = ', '.join(query_info['list'])
-                sample_sql = 'insert into query_samples (query_id, cluster, pod_ips, o_segment_number, o_exec_time) values (\'%s\', \'%s\', \'{%s}\', %s, %s)' % (query_id, query_info['cluster'], list_string, len(query_info['list']), exec_time)
+                sample_sql = 'insert into query_samples (query_id, cluster, pod_ips, o_segment_number, o_exec_time, error_msg) values (\'%s\', \'%s\', \'{%s}\', %s, %s, \'%s\')' % (query_id, query_info['cluster'], list_string, len(query_info['list']), exec_time, query_info['error_msg'])
                 
                 cur.execute(sample_sql)
                 update_query_sample_resource_usage(db_connection, query_id, query_info['start_time'], query_info['end_time'])
@@ -110,7 +113,7 @@ def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
         cur.execute(get_diff_metrics_sql)
         rows = cur.fetchall()
         if rows is None or len(rows) == 0:
-            print("cannot find any metrics for query exec period %d start %s end %s", id, start_time, end_time)
+            print("cannot find any metrics for query exec period %d start %s end %s" % (id, start_time, end_time))
             return
         cpu_user = None
         cpu_system = None

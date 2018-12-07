@@ -47,7 +47,8 @@ def append_seg_list(all_lists, row):
     #alloc_reg = r'^alloc successfully: .*segmentList\[(.*)\]'
     request_reg = r'^alloc request input:query_info:<cluster:\\"(.*?)\\" queryid:\\"(qid-\d*)\\" > resource_info:<seg_num:(\d*) max_seg_num:(\d*) plan_info:(.*) >\W*$'
     alloc_reg = r'^alloc successfully: queryid\[(qid-\d*)\] resource\[(.*?)\] .*segmentList\[(.*?)\]'
-    release_reg = r'query\[(qid-\d*)\] release resource\[(.*?)\]'
+    #release_reg = r'query\[(qid-\d*)\] release resource\[(.*?)\]'
+    release_reg = r'release resource: resource\[(.*?)\] queryid\[(.*?)\] error_msg\[(.*?)\]'
     seg_list = []
     query_id = None
     start_time = None
@@ -56,6 +57,7 @@ def append_seg_list(all_lists, row):
     cluster = None
     min_seg, max_seg = None, None
     plan = None
+    error_msg = ''
     for i in range(len(row)):
         if i == 0:
             m0 = re.search(request_reg, row[i])
@@ -78,8 +80,9 @@ def append_seg_list(all_lists, row):
                 continue
             m2 = re.search(release_reg, row[i])
             if m2 is not None: 
-                query_id = m2.group(1)
-                resource_id = m2.group(2)
+                query_id = m2.group(2)
+                resource_id = m2.group(1)
+                error_msg = m2.group(3)
                 is_start = False
                 is_req = False
                 continue
@@ -103,6 +106,7 @@ def append_seg_list(all_lists, row):
         all_lists[query_id]['resource_id'] = resource_id
     elif query_id is not None:
         all_lists[query_id]['end_time'] = end_time
+        all_lists[query_id]['error_msg'] = error_msg
 
 
 if __name__ == '__main__':

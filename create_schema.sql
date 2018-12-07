@@ -98,4 +98,5 @@ create table if not exists query_samples (
     i_cpu_usage_max integer,
     i_mem_usage_max integer,
     o_exec_time float,
+    error_msg text,
     PRIMARY KEY (query_id, cluster));
