@@ -37,7 +37,7 @@ def create_new_query_sample(all_lists, db_connection):
                     is_success = 'true'
                     if len(query_info['error_msg']) > 0:
                         is_success = 'false'
-                    update_query_sql = 'update exp_queries set end_time = timestamp, success = %s with time zone \'%s\' where query_id = \'%s\'' % (is_success, query_info['end_time'], query_id)
+                    update_query_sql = 'update exp_queries set success = %s, end_time = timestamp with time zone \'%s\' where query_id = \'%s\'' % (is_success, query_info['end_time'], query_id)
                     cur.execute(update_query_sql)
                 if query_info['plan'] is not None:
                     update_query_sql = 'update exp_queries set query_plan = \'%s\' where query_id = \'%s\'' % (json.dumps(query_info['plan']), query_id)
