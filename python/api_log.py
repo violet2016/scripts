@@ -18,9 +18,9 @@ def parse_node_info(node_info):
     whole_node_name = m0.group(1)
     node_name = whole_node_name
     table = ''
-    name_regex = r'^(.*?) on (\w*?)$'
+    name_regex = r'^(.*?) on (\w*?)( \w*?){0,1}$'
     name_match = re.search(name_regex, whole_node_name)
-    
+
     if name_match is not None:
         node_name = name_match.group(1)
         table = name_match.group(2)
