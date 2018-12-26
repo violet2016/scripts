@@ -46,7 +46,8 @@ def append_seg_list(all_lists, row):
     is_req, is_start = False, False
     #alloc_reg = r'^alloc successfully: .*segmentList\[(.*)\]'
     request_reg = r'^alloc request input:query_info:<cluster:\\"(.*?)\\" queryid:\\"(qid-\d*)\\" > resource_info:<seg_num:(\d*) max_seg_num:(\d*) plan_info:(.*) >\W*$'
-    alloc_reg = r'^alloc successfully: queryid\[(qid-\d*)\] resource\[(.*?)\] .*segmentList\[(.*?)\]'
+    alloc_reg = r'^alloc successfully: queryid\[(qid-\d*)\] resource\[(.*?)\] .*SegList\[(.*?)\]'
+    #advisor_reg = r'advisor adjust resource to: {(\d*) (\d*) {(\d*) (\d*) (\d*)} {(\d*) (\d*)(\d*)}}'
     #release_reg = r'query\[(qid-\d*)\] release resource\[(.*?)\]'
     release_reg = r'release resource: resource\[(.*?)\] queryid\[(.*?)\] error_msg\[(.*?)\]'
     seg_list = []
