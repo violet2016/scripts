@@ -27,6 +27,7 @@ def create_new_query_sample(all_lists, db_connection):
         for query_id, query_info in all_lists.items():
             try:
                 if query_info['cluster'] is not None:
+                    print('insert query ', query_id, query_info['cluster'])
                     insert_query_sql = 'insert into exp_queries (query_id, cluster) values (\'%s\', \'%s\')' % (query_id, query_info['cluster'])
                     cur.execute(insert_query_sql)
                 exec_time = calc_time_delta(query_info['start_time'], query_info['end_time'])
@@ -43,6 +44,7 @@ def create_new_query_sample(all_lists, db_connection):
                     update_query_sql = 'update exp_queries set query_plan = \'%s\' where query_id = \'%s\'' % (json.dumps(query_info['plan']), query_id)
                     cur.execute(update_query_sql)
                 if query_info['end_time'] is not None:
+                    print('insert query samples ', query_id, query_info['cluster'])
                     list_string = ', '.join(query_info['list'])
                     sample_sql = 'insert into query_samples_host_ver (query_id, cluster, pod_hosts, o_segment_number, o_exec_time, error_msg) values (\'%s\', \'%s\', \'{%s}\', %s, %s, \'%s\')' % (query_id, query_info['cluster'], list_string, len(query_info['list']), exec_time, query_info['error_msg'])
                     
@@ -101,6 +103,7 @@ def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
         
         metrics_name_list = ['container_cpu_user_seconds_total', 'container_cpu_system_seconds_total', 'container_memory_usage_bytes']
         metrics_name_string = concat_surround_with_quotes(metrics_name_list)
+        print("aggregate query metrics")
         get_diff_metrics_sql = "select metrics_name, max(metric_diff) as diff \
                                 from ( \
                                 select k.metrics_name, \
@@ -126,5 +129,6 @@ def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
                 cpu_system = r[1]
             elif r[0] == 'container_memory_usage_bytes':
                 memory = r[1]
+        print("finish aggregate")
         update_sql = "update query_samples_host_ver set i_cpu_usage_max = %s, i_mem_usage_max = %s where query_id = '%s'" % (cpu_user+cpu_system, memory, id)
         cur.execute(update_sql)
