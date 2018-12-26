@@ -44,7 +44,7 @@ def create_new_query_sample(all_lists, db_connection):
                     cur.execute(update_query_sql)
                 if query_info['end_time'] is not None:
                     list_string = ', '.join(query_info['list'])
-                    sample_sql = 'insert into query_samples_host_ver (query_id, cluster, pod_ips, o_segment_number, o_exec_time, error_msg) values (\'%s\', \'%s\', \'{%s}\', %s, %s, \'%s\')' % (query_id, query_info['cluster'], list_string, len(query_info['list']), exec_time, query_info['error_msg'])
+                    sample_sql = 'insert into query_samples_host_ver (query_id, cluster, pod_hosts, o_segment_number, o_exec_time, error_msg) values (\'%s\', \'%s\', \'{%s}\', %s, %s, \'%s\')' % (query_id, query_info['cluster'], list_string, len(query_info['list']), exec_time, query_info['error_msg'])
                     
                     cur.execute(sample_sql)
                     update_query_sample_resource_usage(db_connection, query_id, query_info['start_time'], query_info['end_time'])
