@@ -103,15 +103,16 @@ def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
         
         metrics_name_list = ['container_cpu_user_seconds_total', 'container_cpu_system_seconds_total', 'container_memory_usage_bytes']
         metrics_name_string = concat_surround_with_quotes(metrics_name_list)
-        print("aggregate query metrics")
+        print("aggregate query metrics", pod_name_list_string)
         get_diff_metrics_sql = "select metrics_name, max(metric_diff) as diff \
                                 from ( \
                                 select k.metrics_name, \
                                 (max(k.metrics_value)-min(k.metrics_value)) as metric_diff, \
                                 max(k.metrics_value) as max, \
                                 k.pod_name from k8s_prometheus_metrics k \
-                                where sample_time > '%s' and sample_time < '%s' and metrics_name in (%s) and pod_name in (%s) and \
-                                metrics_value > 0 and k.pod_name like 'group%%' and container_name not in ('','POD') \
+                                where sample_time > '%s' and sample_time < '%s' and \
+                                k.pod_name like 'group%%' and metrics_name in (%s) and k.pod_name in (%s) and \
+                                metrics_value > 0 and container_name not in ('','POD') \
                                 group by k.pod_name, k.metrics_name \
                                 ) as t1 group by metrics_name" % (start_time, end_time,  metrics_name_string, pod_name_list_string)
         cur.execute(get_diff_metrics_sql)
