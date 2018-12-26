@@ -75,7 +75,9 @@ def append_seg_list(all_lists, row):
             if m1 is not None: 
                 query_id = m1.group(1)
                 resource_id = m1.group(2)
-                seg_list = m1.group(3).split(',')
+                seg_list_full = m1.group(3).split(',')
+                for s in seg_list_full:
+                    seg_list.append(s.split('.')[0])
                 is_req = False
                 is_start = True
                 continue
