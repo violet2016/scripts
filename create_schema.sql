@@ -100,3 +100,20 @@ create table if not exists query_samples (
     o_exec_time float,
     error_msg text,
     PRIMARY KEY (query_id, cluster));
+
+create table if not exists query_samples_host_ver (
+    query_id varchar(32),
+    cluster cidr,
+    pod_hosts varchar(64)[],
+    o_segment_number integer,
+    o_segment_cpu_limit integer,
+    o_segment_cpu_req integer,
+    o_segment_mem_limit integer,
+    o_segment_mem_req integer,
+    o_segment_storage_limit integer,
+    o_segment_storage_req integer,
+    i_cpu_usage_max integer,
+    i_mem_usage_max integer,
+    o_exec_time float,
+    error_msg text,
+    PRIMARY KEY (query_id, cluster));

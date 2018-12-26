@@ -44,7 +44,7 @@ def create_new_query_sample(all_lists, db_connection):
                     cur.execute(update_query_sql)
                 if query_info['end_time'] is not None:
                     list_string = ', '.join(query_info['list'])
-                    sample_sql = 'insert into query_samples (query_id, cluster, pod_ips, o_segment_number, o_exec_time, error_msg) values (\'%s\', \'%s\', \'{%s}\', %s, %s, \'%s\')' % (query_id, query_info['cluster'], list_string, len(query_info['list']), exec_time, query_info['error_msg'])
+                    sample_sql = 'insert into query_samples_host_ver (query_id, cluster, pod_ips, o_segment_number, o_exec_time, error_msg) values (\'%s\', \'%s\', \'{%s}\', %s, %s, \'%s\')' % (query_id, query_info['cluster'], list_string, len(query_info['list']), exec_time, query_info['error_msg'])
                     
                     cur.execute(sample_sql)
                     update_query_sample_resource_usage(db_connection, query_id, query_info['start_time'], query_info['end_time'])
@@ -75,28 +75,28 @@ def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
         return
     # TODO group name make not be fixed to start with group
     with db_connection.cursor() as cur:
-        ips_sql = "select pod_ips from query_samples where query_id = '%s'" % (id)
+        ips_sql = "select pod_hosts from query_samples_host_ver where query_id = '%s'" % (id)
         cur.execute(ips_sql)
         rows = cur.fetchall()
         if rows is None or len(rows) == 0:
             print("did not find the query in sample %s" % id)
             return
-        pods_ips = rows[0][0]
-        if len(pods_ips) == 0:
-            print("pod ip list is empty %s" % id)
+        pod_names = rows[0][0]
+        if len(pod_names) == 0:
+            print("pod name list is empty %s" % id)
             return
-        ips = concat_surround_with_quotes(pods_ips)
-        pod_names_sql = "select pod_name from ( \
-            select distinct ON (pod_name) * from exp_segments_info where exp_time < '%s' and exp_time >= timestamp'%s' - interval '1h') \
-            as sub where ip in (%s) order by exp_time desc" % (start_time, start_time, ips)
-        cur.execute(pod_names_sql)
-        rows = cur.fetchall()
-        pod_names = []
-        if rows is None or len(rows) == 0:
-            print("pod name query no result")
-            return
-        for r in rows:
-            pod_names.append(r[0])
+        #names = concat_surround_with_quotes(pod_names)
+        # pod_names_sql = "select pod_name from ( \
+        #     select distinct ON (pod_name) * from exp_segments_info where exp_time < '%s' and exp_time >= timestamp'%s' - interval '1h') \
+        #     as sub where ip in (%s) order by exp_time desc" % (start_time, start_time, ips)
+        # cur.execute(pod_names_sql)
+        # rows = cur.fetchall()
+        #pod_names = []
+        # if rows is None or len(rows) == 0:
+        #     print("pod name query no result")
+        #     return
+        # for r in rows:
+        #     pod_names.append(r[0])
         pod_name_list_string = concat_surround_with_quotes(pod_names)
         
         metrics_name_list = ['container_cpu_user_seconds_total', 'container_cpu_system_seconds_total', 'container_memory_usage_bytes']
@@ -110,7 +110,7 @@ def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
                                 where sample_time > '%s' and sample_time < '%s' and metrics_name in (%s) and pod_name in (%s) and \
                                 metrics_value > 0 and k.pod_name like 'group%%' and container_name not in ('','POD') \
                                 group by k.pod_name, k.metrics_name \
-                                ) as t1 group by metrics_name" % (start_time, end_time,  metrics_name_string, pod_name_list_string,)
+                                ) as t1 group by metrics_name" % (start_time, end_time,  metrics_name_string, pod_name_list_string)
         cur.execute(get_diff_metrics_sql)
         rows = cur.fetchall()
         if rows is None or len(rows) == 0:
@@ -126,5 +126,5 @@ def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
                 cpu_system = r[1]
             elif r[0] == 'container_memory_usage_bytes':
                 memory = r[1]
-        update_sql = "update query_samples set i_cpu_usage_max = %s, i_mem_usage_max = %s where query_id = '%s'" % (cpu_user+cpu_system, memory, id)
+        update_sql = "update query_samples_host_ver set i_cpu_usage_max = %s, i_mem_usage_max = %s where query_id = '%s'" % (cpu_user+cpu_system, memory, id)
         cur.execute(update_sql)
