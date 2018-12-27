@@ -22,7 +22,7 @@ def config_to_database(configs, time, db_connection):
     with db_connection.cursor() as cur:
         value_string = []
         for c in configs:
-            value = "(%s, %s, %s, %s, %s)" % (time, c['name'], c['cpu'], c['memory'], c['storage'])
+            value = "(%s, '%s', %s, %s, %s)" % (time, c['name'], c['cpu'], c['memory'], c['storage'])
             value_string.append(value)
         sql = "insert into group_configs values%s" % (','.join(value_string))
         print(sql)
