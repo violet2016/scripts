@@ -1,6 +1,8 @@
 import yaml
 import sys, os
 import db_config
+from datetime import datetime
+
 
 def read_hawq_group_def_yaml(config_file):
     configs = []
@@ -31,8 +33,8 @@ def config_to_database(configs, time, db_connection):
 if __name__ == '__main__':
     config_file = sys.argv[1]
     timestamp = os.stat(config_file).st_mtime
-    #timestr = datetime.fromtimestamp(timestamp)
-    print("file", config_file, "time is ", timestamp)
+    timestr = datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%SZ')
+    print("file", config_file, "time is ", timestr)
     configs = read_hawq_group_def_yaml(config_file)
-    config_to_database(configs, timestamp, db_config.myConnection)
+    config_to_database(configs, timestr, db_config.myConnection)
     db_config.myConnection.close()
