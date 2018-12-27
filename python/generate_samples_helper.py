@@ -46,7 +46,10 @@ def create_new_query_sample(all_lists, db_connection):
                 if query_info['end_time'] is not None:
                     print('insert query samples ', query_id, query_info['cluster'])
                     list_string = ', '.join(query_info['list'])
-                    sample_sql = 'insert into query_samples_host_ver (query_id, cluster, pod_hosts, o_segment_number, o_exec_time, error_msg) values (\'%s\', \'%s\', \'{%s}\', %s, %s, \'%s\')' % (query_id, query_info['cluster'], list_string, len(query_info['list']), exec_time, query_info['error_msg'])
+                    get_config_sql = 'select cpu_limit, mem_limit, storage_limit from group_configs where config_name = \'%s\' and config_time < \'%s\' order by config_time desc limit 1' % (query_info['groupname'], query_info['start_time'])
+                    cur.execute(get_config_sql)
+                    row = cur.fetch()
+                    sample_sql = 'insert into query_samples_host_ver (query_id, cluster, pod_hosts, o_segment_cpu_limit, o_segment_mem_limit, o_segment_storage_limit, o_segment_number, o_exec_time, error_msg) values (\'%s\', \'%s\', \'{%s}\', %s, %s, %s, %s, %s, \'%s\')' % (query_id, query_info['cluster'], list_string, row[0], row[1], row[2], len(query_info['list']), exec_time, query_info['error_msg'])
                     
                     cur.execute(sample_sql)
                     update_query_sample_resource_usage(db_connection, query_id, query_info['start_time'], query_info['end_time'])

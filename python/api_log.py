@@ -105,6 +105,7 @@ def append_seg_list(all_lists, row):
         all_lists[query_id]['cluster'] = cluster
     elif is_start:
         all_lists[query_id]['list'] = seg_list
+        all_lists[query_id]['groupname'] = seg_list[0].split("-")[0]
         all_lists[query_id]['start_time'] = start_time
         all_lists[query_id]['resource_id'] = resource_id
     elif query_id is not None:
