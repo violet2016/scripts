@@ -111,7 +111,7 @@ def update_query_sample_resource_usage(db_connection, id, start_time, end_time):
                                 max(k.metrics_value) as max, \
                                 k.pod_name from k8s_prometheus_metrics k \
                                 where sample_time > '%s' and sample_time < '%s' and \
-                                k.pod_name like 'group%%' and metrics_name in (%s) and k.pod_name in (%s) and \
+                                metrics_name in (%s) and k.pod_name in (%s) and \
                                 metrics_value > 0 and container_name not in ('','POD') \
                                 group by k.pod_name, k.metrics_name \
                                 ) as t1 group by metrics_name" % (start_time, end_time,  metrics_name_string, pod_name_list_string)

@@ -104,7 +104,7 @@ create table if not exists query_samples (
 create table if not exists query_samples_host_ver (
     query_id varchar(32),
     cluster cidr,
-    pod_hosts varchar(64)[],
+    pod_hosts varchar(32)[],
     o_segment_number integer,
     o_segment_cpu_limit integer,
     o_segment_cpu_req integer,
@@ -117,3 +117,10 @@ create table if not exists query_samples_host_ver (
     o_exec_time float,
     error_msg text,
     PRIMARY KEY (query_id, cluster));
+create table if not exists group_configs(
+    config_time timestamp with time zone,
+    group_name varchar(32),
+    cpu_limit integer,
+    mem_limit integer,
+    storage_limit integer,
+    PRIMARY KEY (config_time, group_name));
