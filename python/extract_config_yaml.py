@@ -27,7 +27,6 @@ def config_to_database(configs, time, db_connection):
             value = "('%s', '%s', %s, %s, %s)" % (time, c['name'], c['cpu'], c['memory'], c['storage'])
             value_string.append(value)
         sql = "insert into group_configs values%s" % (','.join(value_string))
-        print(sql)
         cur.execute(sql)
         db_connection.commit()
     return True
@@ -35,7 +34,6 @@ if __name__ == '__main__':
     config_file = sys.argv[1]
     timestamp = os.stat(config_file).st_mtime
     timestr = datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%SZ')
-    print("file", config_file, "time is ", timestr)
     configs = read_hawq_group_def_yaml(config_file)
     config_to_database(configs, timestr, db_config.myConnection)
     db_config.myConnection.close()
