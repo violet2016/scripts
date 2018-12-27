@@ -6,14 +6,14 @@ def read_hawq_group_def_yaml(config_file):
     configs = []
     with open(config_file, 'r') as stream:
         data_loaded = yaml.load(stream)
-        for p in data_loaded['items']:
-            for g in p['spec']['groups']:
-                config = {}
-                config['name'] = g['name']
-                config['cpu'] = g['groupResourceLimit']['cpu']
-                config['storage'] = g['groupResourceLimit']['ephemeralStorage']
-                config['memory'] = g['groupResourceLimit']['memory']
-                configs.append(config)
+        #for p in data_loaded['items']:
+        for g in data_loaded['spec']['groups']:
+            config = {}
+            config['name'] = g['name']
+            config['cpu'] = g['groupResourceLimit']['cpu']
+            config['storage'] = g['groupResourceLimit']['ephemeralStorage']
+            config['memory'] = g['groupResourceLimit']['memory']
+            configs.append(config)
     return configs
 
 def config_to_database(configs, time, db_connection):
@@ -31,6 +31,7 @@ def config_to_database(configs, time, db_connection):
 if __name__ == '__main__':
     config_file = sys.argv[1]
     timestamp = os.stat(config_file).st_mtime
+    #timestr = datetime.fromtimestamp(timestamp)
     print("file", config_file, "time is ", timestamp)
     configs = read_hawq_group_def_yaml(config_file)
     config_to_database(configs, timestamp, db_config.myConnection)
