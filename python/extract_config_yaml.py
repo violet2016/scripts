@@ -12,9 +12,11 @@ def read_hawq_group_def_yaml(config_file):
         for g in data_loaded['spec']['groups']:
             config = {}
             config['name'] = g['name']
+            config['size'] = g['groupSize']
             config['cpu'] = g['groupResourceLimit']['cpu']
             config['storage'] = g['groupResourceLimit']['ephemeralStorage']
             config['memory'] = g['groupResourceLimit']['memory']
+            
             configs.append(config)
     return configs
 
@@ -31,9 +33,15 @@ def config_to_database(configs, time, db_connection):
         db_connection.commit()
     return True
 if __name__ == '__main__':
-    config_file = sys.argv[1]
-    timestamp = os.stat(config_file).st_mtime
-    timestr = datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%SZ')
-    configs = read_hawq_group_def_yaml(config_file)
-    config_to_database(configs, timestr, db_config.myConnection)
-    db_config.myConnection.close()
+    op = sys.argv[1]
+    config_file = sys.argv[2]
+    if op == 'store':
+        timestamp = os.stat(config_file).st_mtime
+        timestr = datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%SZ')
+        configs = read_hawq_group_def_yaml(config_file)
+        config_to_database(configs, timestr, db_config.myConnection)
+        db_config.myConnection.close()
+    elif op == 'get':
+        configs = read_hawq_group_def_yaml(config_file)
+        for c in configs:
+            print(c['cpu'], c['memory'], c['storage'], c['size'])

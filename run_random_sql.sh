@@ -1,9 +1,12 @@
 #!/bin/bash
-kubectl get hawqresourcepool -o yaml > config.yaml
-if [ $# -ne 5 ]; then
+#kubectl get hawqresourcepool -o yaml > config.yaml
+
+if [ $# -ne 6 ]; then
     echo -e "\nUsage:\t $0 HOSTNAME START END REPEAT_TIME DATA_SIZE\n"
     exit 1
 fi
+configs=$(python36 extract_config_yaml.py get $6)
+echo $configs
 DIFF=$(($3-$2+1))
 RANDOM=$$
 for i in `seq $4`
